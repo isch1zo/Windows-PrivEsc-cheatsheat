@@ -99,9 +99,9 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
     > runas /savecred /user:[user gotten from pervious command] C:\[reverse_shell_path.exe]
   
   - Configuration Files
-    > dir/s *pass* == *.config<br />
-    > findstr/sipassword *.xml *.ini*.txt<br />
-    > .\winPEASany.exe quiet cmd searchfast filesinfo<br />
+    > dir/s *pass* == *.config
+    > findstr/sipassword *.xml *.ini*.txt
+    > .\winPEASany.exe quiet cmd searchfast filesinfo
   
   - SAM & SYSTEM
     - if you get SAM & SYSTEM can used to dump hashes by the following steps
@@ -150,9 +150,9 @@ oLink.Save
 7- Installed Apps exploits:
 ```
   - enumerate running programs:
-    > tasklist /v<br />
-    > .\seatbelt.exe NonstandardProcesses<br />
-    > .\winPEASany.exe quiet procesinfo<br />
+    > tasklist /v
+    > .\seatbelt.exe NonstandardProcesses
+    > .\winPEASany.exe quiet procesinfo
   - when you see an intersting app search for exploits in (exploit-db, google, GitHub, others)
  ``` 
 8- Hot Potato:
@@ -235,7 +235,7 @@ oLink.Save
   
   5- Spend some time and read over the results of your enumeration.
   
-`` 
+```
 If WinPEAS or another tool finds something interesting, make a note of it. Avoid rabbit holes by creating a checklist of things you need for the privilege escalation method to work.
   
   Have a quick look around for files in your user’s desktop and other common locations (e.g. C:\and C:\Program Files).Read through interesting files that you find, as they may contain useful information that could help escalate privileges.
@@ -244,5 +244,5 @@ If WinPEAS or another tool finds something interesting, make a note of it. Avoid
   
   If you still don’t have an admin shell, re-read your full enumeration dumps and highlight anything that seems odd.This might be a process or file name you aren’t familiar with or even a username.At this stage you can also start to think about Kernel Exploits.
   
-``
+```
   
