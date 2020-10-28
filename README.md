@@ -1,5 +1,5 @@
 # Windows Privilege Escalation Cheat Sheet
-Hi There today I published a checklist of strategies on Linux Privilege Escalation by [URL:Tib3rius]
+Hi There today I published a checklist of strategies on Linux Privilege Escalation by [Tib3rius](https://www.udemy.com/share/102EPcAkoac15TRXo=/).
 
 ## Windows Privilege Escalation Tools :
 
