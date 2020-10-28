@@ -167,13 +167,13 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
         
         
 ## Privileges Escalition:
-1- Check your user (whoami) and groups (net user <username>)
-2- Run winPEASwith fast, searchfast, and cmdoptions.
-3- Run Seatbelt & other scripts as well!
-4- If your scripts are failing and you don’t know why, you can always run the manual commands from this course, and other Windows PrivEsc cheatsheets online (e.g. https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md)
-5- Spend some time and read over the results of your enumeration.
-`If WinPEAS or another tool finds something interesting, make a note of it. Avoid rabbit holes by creating a checklist of things you need for the privilege escalation method to work.`
-`Have a quick look around for files in your user’s desktop and other common locations (e.g. C:\and C:\Program Files).Read through interesting files that you find, as they may contain useful information that could help escalate privileges.`
-`Try things that don’t have many steps first, e.g. registry exploits, services, etc.Have a good look at admin processes, enumerate their versions and search for exploits.Check for internal ports that you might be able to forward to your attacking machine.`
-`If you still don’t have an admin shell, re-read your full enumeration dumps and highlight anything that seems odd.This might be a process or file name you aren’t familiar with or even a username.At this stage you can also start to think about Kernel Exploits.`
+  1- Check your user (whoami) and groups (net user <username>)
+  2- Run winPEASwith fast, searchfast, and cmdoptions.
+  3- Run Seatbelt & other scripts as well!
+  4- If your scripts are failing and you don’t know why, you can always run the manual commands from this course, and other Windows PrivEsc cheatsheets online (e.g. https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md)
+  5- Spend some time and read over the results of your enumeration.
+  `If WinPEAS or another tool finds something interesting, make a note of it. Avoid rabbit holes by creating a checklist of things you need for the privilege escalation method to work.`
+  `Have a quick look around for files in your user’s desktop and other common locations (e.g. C:\and C:\Program Files).Read through interesting files that you find, as they may contain useful information that could help escalate privileges.`
+  `Try things that don’t have many steps first, e.g. registry exploits, services, etc.Have a good look at admin processes, enumerate their versions and search for exploits.Check for internal ports that you might be able to forward to your attacking machine.`
+  `If you still don’t have an admin shell, re-read your full enumeration dumps and highlight anything that seems odd.This might be a process or file name you aren’t familiar with or even a username.At this stage you can also start to think about Kernel Exploits.`
   
